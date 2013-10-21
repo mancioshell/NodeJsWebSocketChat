@@ -5,4 +5,15 @@ body {
 }
 
 
+.panel-body {
+    padding: 5px;
+}
+
+.right-chat {
+    background-color: #dff0d8;
+}
+
+.left-chat {
+    background-color: #d6e9c6;
+}
   

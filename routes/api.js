@@ -71,18 +71,20 @@ exports.login = function(req,res){
         if(users!=null){
             req.session.loggedIn = true;
             req.session.user = body.username;
-            console.log("Find ok...")
-            console.log(users)
             res.json({
                 users : users
             })
         }else{
-            console.log("Find ERROR...")
             res.send(401, 'Username or password is invalid');
         }
     });
 
 };
+
+
+exports.info = function(req,res){
+    res.json({"username": req.session.user});
+}
 
 exports.logout = function(req,res){
     req.session.loggedIn = false;

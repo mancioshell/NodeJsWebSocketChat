@@ -1,7 +1,7 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('fantacalcio', ['ui.router','myApp.filters', 'myApp.services', 'myApp.directives']).
+angular.module('chat', ['ui.router','myApp.filters', 'myApp.services', 'myApp.directives']).
  config(['$stateProvider','$urlRouterProvider','$locationProvider', function($stateProvider, $urlRouterProvider) {
 
         $urlRouterProvider.otherwise("/login")
@@ -21,7 +21,7 @@ angular.module('fantacalcio', ['ui.router','myApp.filters', 'myApp.services', 'm
 
 
 // Declare app level module which depends on filters, and services
-angular.module('fantacalcio-app', ['ui.router','myApp.filters', 'myApp.services', 'myApp.directives']).
+angular.module('chat-app', ['ui.router','myApp.filters', 'myApp.services', 'myApp.directives']).
     config(['$stateProvider','$urlRouterProvider','$locationProvider', function($stateProvider, $urlRouterProvider) {
 
         $urlRouterProvider.otherwise("/home")

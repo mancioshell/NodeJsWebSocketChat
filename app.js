@@ -50,9 +50,7 @@ if (app.get('env') === 'development') {
 // production only
 if (app.get('env') === 'production') {
   // TODO
-}; 
-
-
+};
 
 // Routes
 app.get('/', routes.index);
@@ -63,6 +61,7 @@ app.get('/partial/:name', routes.partial);
 app.post('/api/register', api.register);
 app.post('/api/login', api.login);
 app.delete('/api/logout', restrict,api.logout);
+app.get('/api/info', restrict,api.info);
 
 
 // redirect all others to the index (HTML5 history)
@@ -74,6 +73,66 @@ app.get('*', routes.index);
 
 express.vhost('your-vhost-name', app);
 
-http.createServer(app).listen(app.get('port'), function () {
+var server = http.createServer(app).listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
+});
+
+/**
+ * Socket io handler
+ */
+
+var io = require('socket.io').listen(server);
+
+var count = 0;
+var users = {"users":[]};
+
+function reloadUsers() { // Send the count of the users to all
+    io.sockets.emit('nbUsers', {"nb": count});
+}
+
+io.sockets.on('connection', function (socket) { // First connection
+
+    count ++;
+    reloadUsers(); // Send the count to all the users
+
+    socket.on('adduser', function (username) {
+        users.users.push({"socket":socket.id,"username":username,"status":"online"});
+        io.sockets.emit('updateUsers', users);
+    });
+
+    socket.on('disconnect', function () { // Disconnection of the client
+        count -= 1;
+        reloadUsers();
+
+        users.users = users.users.filter(function(elem){
+            if(elem.socket!=socket.id)
+                return elem;
+        });
+        io.sockets.emit('updateUsers', users);
+    });
+
+
+    socket.on('message', function (data) { // Broadcast the message to all
+
+        console.log(data)
+
+        var usernameTo = data.to;
+
+        var socketidTo = users.users.filter(function(elem){
+            if(elem.username==usernameTo)
+                return elem;
+        })[0].socket;
+
+        if(socketidTo!=false){
+            var usernameFrom = users.users.filter(function(elem){
+                if(elem.socket==socket.id)
+                    return elem;
+            })[0].username;
+
+            var transmit = {date : new Date().toISOString(), from : usernameFrom, message : data.msg};
+            io.sockets.socket(socketidTo).emit('message', transmit);
+        }
+
+    });
+
 });

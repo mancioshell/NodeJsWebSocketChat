@@ -1,161 +1,76 @@
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-9">
 
-        <div class="row">
-            <div class="col-md-12">
-
-                <div class="panel panel-info">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading">Your First Panel</div>
-
-                    <table class="table table-condensed">
-                        <thead>
-                        <tr>
-                            <th width="30%">Column 1</th>
-                            <th width="30%">Column 2</th>
-                            <th width="20%"><span class="glyphicon glyphicon-pencil"></span></th>
-                            <th width="20%"><span class="glyphicon glyphicon-trash"></span></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="thing in things">
-                            <td>{{thing.name}}</td>
-                            <td>{{thing.size}}</td>
-                            <td>
-                                <a type="button" class="btn btn-primary btn-sm" href="{{thing._id}}">
-                                    <span class="glyphicon glyphicon-pencil"></span> Manage
-                                </a>
-                            </td>
-                            <td>
-                                <button type="button" ng-click="" class="btn btn-danger btn-sm">
-                                    <span class="glyphicon glyphicon-trash"></span> Delete
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-
+        <div class="panel panel-info" id="main-panel">
+            <div class="panel-heading">
+                Chat Room
             </div>
-        </div>
+            <div class="panel-body">
 
+                <ul class="nav nav-pills" id="myPill">
+                    <li ng-repeat="chat in chats"><a class="active" href="#{{chat.socket}}" data-toggle="pill">{{chat.username}}</a></li>
+                </ul>
 
+                <div class="pill-content" id="myPillContent" style="min-height: 358px; max-height: 382px; overflow-y:auto; margin-top: 5px;">
+                    <div ng-repeat="chat in chats" class="pill-pane" id="{{chat.socket}}">
 
-        <div class="row">
-            <div class="col-md-12">
-
-                <div class="panel panel-success">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading">Your Second Panel</div>
-
-                    <table class="table table-condensed">
-                        <thead>
-                        <tr>
-                            <th width="30%">Column 1</th>
-                            <th width="30%">Column 2</th>
-                            <th width="20%"><span class="glyphicon glyphicon-pencil"></span></th>
-                            <th width="20%"><span class="glyphicon glyphicon-trash"></span></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="thing in things">
-                            <td>{{thing.name}}</td>
-                            <td>{{thing.size}}</td>
-                            <td>
-                                <a type="button" class="btn btn-primary btn-sm" href="{{thing._id}}">
-                                    <span class="glyphicon glyphicon-pencil"></span> Manage
-                                </a>
-                            </td>
-                            <td>
-                                <button type="button" ng-click="delete_team(team)" class="btn btn-danger btn-sm">
-                                    <span class="glyphicon glyphicon-trash"></span> Delete
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-
-            </div>
-        </div>
-
-        </br>
-
-        <hr>
-
-        <div class="row">
-
-            <div class="col-md-4">
-
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Create Thing</h3>
-                    </div>
-                    <div class="panel-body">
-                        Here you can create your thing!
-                        </br></br>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a href="" class="btn btn-default btn-lg col-md-offset-3">
-                                    <span class="glyphicon glyphicon-book"></span> Create!
-                                </a>
-                            </div>
+                        <div class="list-group chat-entry">
+                            <a href='#' class='list-group-item' ng-repeat="msg in chat.msg">
+                                <p class='text-muted'><time class='date' title='"+date+"'>{{msg.date}}</time></p>
+                                <strong class='list-group-item-heading'>{{msg.username}} said:</strong>
+                                <p class='list-group-item-text'>{{msg.message}}</p>
+                            </a>
                         </div>
 
                     </div>
                 </div>
 
             </div>
+        </div>
+    </div>
 
-            <div class="col-md-4">
+    <div class="col-lg-3">
 
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Create Thing</h3>
-                    </div>
-                    <div class="panel-body">
-                        Here you can create your thing!
-                        </br></br>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a href="" class="btn btn-default btn-lg col-md-offset-3">
-                                    <span class="glyphicon glyphicon-bookmark"></span> Found!
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+        <div class="panel panel-success" style="max-height: 358px; overflow-y:auto;">
+            <div class="panel-heading">
+                Connected Users
+            </div>
+            <div class="panel-body">
+                <div class="list-group" id="users" ng-repeat="user in users | filterUsers : username">
+                    <a href='' ng-click="open_chat(user)" class='list-group-item users'>
+                        <span class='label {{user.status | status2icon }}'><i class='glyphicon glyphicon-certificate'></i></span>
+                        {{user.username}}
+                    </a>
                 </div>
             </div>
-
-            <div class="col-md-4">
-
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Join Set</h3>
-                    </div>
-                    <div class="panel-body">
-                        Here you can join existing set!
-                        </br></br>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a href="" type="button" class="btn btn-default btn-lg col-md-offset-3">
-                                    <span class="glyphicon glyphicon-arrow-right"></span> Join!
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
+    </div>
 
 
+</div>
+
+</hr>
+
+
+<div class="row">
+    <div class="col-lg-7 col-lg-offset-1">
+        <input type="text" class="form-control" ng-model="chatmsg" id="messageInput" placeholder="Enter your message...">
+    </div>
+    <div class="col-lg-2">
+        <button type="submit" id="submit" ng-click="send_msg()" class="btn btn-primary">Send</button>
+
+    </div>
+</div>
+
+</br>
+
+<div class="row">
+    <div class="col-lg-8 col-lg-offset-1">
+
+        <div>
+            <p>There is <span>{{nbUsers}}</span> connected user(s).</p>
+        </div>
     </div>
 
 </div>
