@@ -21,96 +21,96 @@ function LogoutAppCtrl($scope, $http,$window,$location) {
 
 LogoutAppCtrl.$inject = ["$scope","$http","$window","$location"];
 
-function WebAppCtrl($scope, $http,$window,$location,socket) {
+function WebAppCtrl($scope, $rootScope, $http,$window,$location,socket) {
 
 
     $scope.nbUsers = 0;
     $scope.users = [];
     $scope.chats=[];
-    $scope.chatmsg="";
     $scope.current_chat=null;
 
 
+    var _get_opened_chat = function(user){
+        var _app = null;
+
+        $scope.chats.filter(function(elem,index){
+            if(user.username==elem.username){
+                _app = index;
+                return elem;
+            }
+        });
+
+        return _app;
+    }
+
     var add_message = function(data,self)
     {
-        console.log(data)
-
         if(self){
             var username = data.to;
         }else{
+            console.log(data)
             var username = data.from;
         }
+
+        data.username=data.from;
 
         var user = $scope.users.filter(function(elem){
             if(username==elem.username)
                 return elem;
         })[0];
 
-        var opened_chats = $scope.chats.filter(function(elem){
-            if(user.username==elem.username)
-                return elem;
-        });
+        var _app = _get_opened_chat(user);
 
-        if(opened_chats.length>0){
-            user.msg = [];
-            user.msg.push(data);
-            $scope.chats.push(user);
-            var id = opened_chats[0].socket;
-            $('#myPill a[href="#'+id+'"]').tab('show')
-            console.log(id)
+        if(_app!=null){
+            var opened_chats = $scope.chats[_app];
+            opened_chats.msg.push(data);
+            $scope.chats[_app] = opened_chats;
         }else{
-            user.msg = [];
-            user.msg.push(data);
-            $scope.chats.push(user);
-            var id = $scope.chats[$scope.chats.length-1].socket;
-            $('#myPill a[href="#'+id+'"]').tab('show')
+            var new_chat = {"username":user.username, "socket":user.socket, "visible":true, "msg": [data]};
+            $scope.chats.push(new_chat);
         }
 
-
-
-    }
-
-    $scope.open_chat = function(user){
-        console.log(user)
-        //var user = $scope.users[index];
-        console.log($scope.users)
+        var id = user.socket;
+        window.setTimeout(function(){$('#myPill a[href="#'+id+'"]').tab('show');},1000);
 
         $scope.current_chat = user.username;
 
-        var opened_chats = $scope.chats.filter(function(elem){
-            if(user.username==elem.username)
-                return elem;
-        });
+    }
 
-        if(opened_chats.length>0){
-            var id = opened_chats[0].socket;
-            $('#myPill a[href="#'+id+'"]').tab('show')
-            console.log(id)
-        }else{
-            user.msg = [];
-            $scope.chats.push(user);
+    $scope.open_chat = function(user)
+    {
+        var _app = _get_opened_chat(user);
 
-
-            var id = $scope.chats[$scope.chats.length-1].socket;
-            $('#myPill a[href="#'+id+'"]').tab('show')
-
-
-
+        if(_app==null){
+            var data = {date : new Date().toISOString(), message : "Starting chat with: "+user.username};
+            var new_chat = {"username":user.username, "socket":user.socket, "visible":true, "msg": [data]};
+            $scope.chats.push(new_chat);
         }
 
+        var id = user.socket;
+
+        $scope.$watch('chats.length', function(newValue,oldValue) {
+            console.log(oldValue)
+            console.log(newValue)
+
+            $('#myPill a[href="#'+id+'"]').tab('show');
+        }); // initialize the watch
+
+        //window.setTimeout(function(){console.log("I'm Here...");$('#myPill a[href="#'+id+'"]').tab('show');},1000);
+
+        $scope.current_chat = user.username;
     }
 
 
-
-
-
     $scope.send_msg = function(){
-        console.log($scope.chatmsg);
-
-        var data = {date : new Date().toISOString(), from : $scope.username, to: $scope.current_chat, message : $scope.chatmsg};
-        add_message(data,true);
-        console.log($scope.current_chat)
-        socket.emit('message', {"msg" :$scope.chatmsg, "to":$scope.current_chat});
+        if($scope.chatmsg==""){
+            noty({text: 'Message must be not empty!',  timeout: 1000, type: 'warning'});
+        }else{
+            var data = {date : new Date().toISOString(), from : $scope.username, to: $scope.current_chat, message : $scope.chatmsg};
+            add_message(data,true);
+            socket.emit('message', {"msg" :$scope.chatmsg, "to":$scope.current_chat});
+            $scope.chatmsg="";
+        }
     }
 
 
@@ -148,10 +148,14 @@ function WebAppCtrl($scope, $http,$window,$location,socket) {
 
         socket.on('message', function(data) {
             console.log("receive message...")
+            //var transmit = {date : new Date().toISOString(), from : usernameFrom, message : data.msg};)
             add_message(data,false);
             console.log(data);
         });
     }
+
+
+
 
 
     $scope.get_info();
@@ -159,7 +163,7 @@ function WebAppCtrl($scope, $http,$window,$location,socket) {
 
 }
 
-WebAppCtrl.$inject = ["$scope","$http","$window","$location","socket"];
+WebAppCtrl.$inject = ["$scope","$rootScope","$http","$window","$location","socket"];
 
 function LoginCtrl($scope,$http,$window,$location) {
     $scope.failed_login = "";

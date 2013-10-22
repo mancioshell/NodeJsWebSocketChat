@@ -8,17 +8,20 @@
             <div class="panel-body">
 
                 <ul class="nav nav-pills" id="myPill">
-                    <li ng-repeat="chat in chats"><a class="active" href="#{{chat.socket}}" data-toggle="pill">{{chat.username}}</a></li>
+                    <li ng-repeat="chat in chats" maketab>
+                        <a class="active" href="#{{chat.socket}}" data-toggle="pill">{{chat.username}} </a>
+                    </li>
                 </ul>
 
                 <div class="pill-content" id="myPillContent" style="min-height: 358px; max-height: 382px; overflow-y:auto; margin-top: 5px;">
                     <div ng-repeat="chat in chats" class="pill-pane" id="{{chat.socket}}">
 
                         <div class="list-group chat-entry">
-                            <a href='#' class='list-group-item' ng-repeat="msg in chat.msg">
+                            <a href='' class='list-group-item' ng-repeat="msg in chat.msg">
                                 <p class='text-muted'><time class='date' title='"+date+"'>{{msg.date}}</time></p>
-                                <strong class='list-group-item-heading'>{{msg.username}} said:</strong>
-                                <p class='list-group-item-text'>{{msg.message}}</p>
+                                <strong ng-show="msg.username" class='list-group-item-heading'>{{msg.username}} said:</strong>
+                                <p ng-show="msg.username" class='list-group-item-text'>{{msg.message}}</p>
+                                <p ng-hide="msg.username" class='list-group-item-text'><small>{{msg.message}}</small></p>
                             </a>
                         </div>
 
@@ -58,7 +61,7 @@
         <input type="text" class="form-control" ng-model="chatmsg" id="messageInput" placeholder="Enter your message...">
     </div>
     <div class="col-lg-2">
-        <button type="submit" id="submit" ng-click="send_msg()" class="btn btn-primary">Send</button>
+        <button type="submit" id="submit" ng-disabled="current_chat==null" ng-click="send_msg()" class="btn btn-primary">Send</button>
 
     </div>
 </div>
