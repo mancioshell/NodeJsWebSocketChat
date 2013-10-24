@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #Angular Express MongoDB Bootstrap Noty JS Seed
 
 I improved this project, adding Noty JS (http://needim.github.io/noty/) for Popup Notifications, and creating a small set of REST APIs to perform login, logout and check session in Express JS, interacting with MongoDB.
@@ -96,3 +97,7 @@ A simple [blog](https://github.com/btford/angular-express-blog) based on this se
 For more information on AngularJS please check out http://angularjs.org/
 For more on Express and Jade, http://expressjs.com/ and http://jade-lang.com/ are
 your friends.
+=======
+NodeJsWebSocketChat
+===================
+>>>>>>> d94001971534c528963a44fa21a3f38b8852d265
