@@ -11,4 +11,9 @@
 .left-chat {
     background-color: #d6e9c6;
 }
-  
+
+.nav-pills > li .close {
+    margin-top: -18px;
+    margin-left: 12px;
+    font-size: 15px;
+}

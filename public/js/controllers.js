@@ -3,7 +3,7 @@
 /* Controllers */
 
 
-function LogoutAppCtrl($scope, $http,$window,$location) {
+function LogoutAppCtrl($scope, $http,$window) {
 
     $scope.logout = function()
     {
@@ -19,9 +19,9 @@ function LogoutAppCtrl($scope, $http,$window,$location) {
 
 }
 
-LogoutAppCtrl.$inject = ["$scope","$http","$window","$location"];
+LogoutAppCtrl.$inject = ["$scope","$http","$window"];
 
-function WebAppCtrl($scope, $rootScope, $http,$window,$location,socket) {
+function WebAppCtrl($scope, $http,socket) {
 
 
     $scope.nbUsers = 0;
@@ -70,9 +70,6 @@ function WebAppCtrl($scope, $rootScope, $http,$window,$location,socket) {
             $scope.chats.push(new_chat);
         }
 
-        var id = user.socket;
-        window.setTimeout(function(){$('#myPill a[href="#'+id+'"]').tab('show');},1000);
-
         $scope.current_chat = user.username;
 
     }
@@ -87,18 +84,14 @@ function WebAppCtrl($scope, $rootScope, $http,$window,$location,socket) {
             $scope.chats.push(new_chat);
         }
 
-        var id = user.socket;
-
-        $scope.$watch('chats.length', function(newValue,oldValue) {
-            console.log(oldValue)
-            console.log(newValue)
-
-            $('#myPill a[href="#'+id+'"]').tab('show');
-        }); // initialize the watch
-
-        //window.setTimeout(function(){console.log("I'm Here...");$('#myPill a[href="#'+id+'"]').tab('show');},1000);
-
         $scope.current_chat = user.username;
+    }
+
+
+    $scope.close_chat = function(chat){
+        var user = chat.username;
+        var _app = _get_opened_chat(user);
+        $scope.chats.splice(_app, 1);
     }
 
 
@@ -118,7 +111,6 @@ function WebAppCtrl($scope, $rootScope, $http,$window,$location,socket) {
     {
         $http({method: 'GET', url : '/api/info'}).
             success(function(data,status,headers,config){
-                console.log(data)
                 $scope.username = data.username;
 
                 init_socket($scope.username);
@@ -143,14 +135,10 @@ function WebAppCtrl($scope, $rootScope, $http,$window,$location,socket) {
 
         socket.on('updateUsers',function(data){
             $scope.users = data.users;
-            console.log(data)
         });
 
         socket.on('message', function(data) {
-            console.log("receive message...")
-            //var transmit = {date : new Date().toISOString(), from : usernameFrom, message : data.msg};)
             add_message(data,false);
-            console.log(data);
         });
     }
 
@@ -163,9 +151,9 @@ function WebAppCtrl($scope, $rootScope, $http,$window,$location,socket) {
 
 }
 
-WebAppCtrl.$inject = ["$scope","$rootScope","$http","$window","$location","socket"];
+WebAppCtrl.$inject = ["$scope","$http","socket"];
 
-function LoginCtrl($scope,$http,$window,$location) {
+function LoginCtrl($scope,$http,$window) {
     $scope.failed_login = "";
 
     $scope.login = function()
@@ -187,7 +175,7 @@ function LoginCtrl($scope,$http,$window,$location) {
 
     }
 }
-LoginCtrl.$inject = ["$scope","$http","$window","$location"];
+LoginCtrl.$inject = ["$scope","$http","$window"];
 
 
 function RegistrationCtrl($scope,$http) {

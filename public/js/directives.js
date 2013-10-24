@@ -8,18 +8,13 @@ angular.module('myApp.directives', []).
     };
   }])
     .directive('maketab',function() {
-        return function(scope, elm, attrs) {
-            console.log(elm)
-            console.log(scope)
-            console.log(attrs)
-
-            $(elm).tab("show")
-            $(elm).tab("show")
-            /*elm.tab({
-                show: function(event, ui) {
-                    console.log(event)
-                    scope.$broadcast("tabChanged",ui);
-                }
-            });*/
-        };
+        return {
+            restrict: 'A',
+            link: function (scope, elem, attrs) {
+                scope.$watch('chats', function(newValue,oldValue) {
+                    var id = newValue[0].socket;
+                    $('#myPill a[href="#'+id+'"]').tab('show');
+                }); // initialize the watch
+            }
+        }
     })

@@ -2,7 +2,7 @@
  * Serve JSON to our AngularJS client
  */
 var mongoose = require('mongoose');
-var dbURI = 'mongodb://localhost:27017/fantacalcio';
+var dbURI = 'mongodb://localhost:27017/nodejs-websocket-chat';
 var connection = mongoose.createConnection(dbURI,{ server: { poolSize: 5 } });
 
 var usersSchema = require('../models/users');

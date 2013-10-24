@@ -8,13 +8,17 @@
             <div class="panel-body">
 
                 <ul class="nav nav-pills" id="myPill">
-                    <li ng-repeat="chat in chats" maketab>
-                        <a class="active" href="#{{chat.socket}}" data-toggle="pill">{{chat.username}} </a>
+                    <li ng-repeat="chat in chats">
+                        <a class="active" href="#{{chat.socket}}" data-toggle="pill">{{chat.username}}
+                            <button ng-click="close_chat(chat)" class="close" type="button">&times;</button>
+                        </a>
+
+
                     </li>
                 </ul>
 
                 <div class="pill-content" id="myPillContent" style="min-height: 358px; max-height: 382px; overflow-y:auto; margin-top: 5px;">
-                    <div ng-repeat="chat in chats" class="pill-pane" id="{{chat.socket}}">
+                    <div ng-repeat="chat in chats" class="pill-pane" id="{{chat.socket}}" maketab>
 
                         <div class="list-group chat-entry">
                             <a href='' class='list-group-item' ng-repeat="msg in chat.msg">
